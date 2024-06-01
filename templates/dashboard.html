@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <h1 class="mt-5">Dashboard</h1>
+        <h2>Account: {{ account }}</h2>
+
+        <form method="POST" action="/balance/{{ account }}">
+            <button type="submit" class="btn btn-primary mt-3">Check Balance</button>
+        </form>
+
+        <form method="POST" action="/withdraw" class="mt-3">
+            <input type="hidden" name="account" value="{{ account }}">
+            <div class="form-group">
+                <label for="amount">Amount to Withdraw:</label>
+                <input type="number" class="form-control" id="amount" name="amount" required>
+            </div>
+            <button type="submit" class="btn btn-danger">Withdraw</button>
+        </form>
+
+        <form method="POST" action="/create_estate" class="mt-3">
+            <input type="hidden" name="account" value="{{ account }}">
+            <div class="form-group">
+                <label for="name">Estate Name:</label>
+                <input type="text" class="form-control" id="name" name="name" required>
+            </div>
+            <div class="form-group">
+                <label for="address">Estate Address:</label>
+                <input type="text" class="form-control" id="address" name="address" required>
+            </div>
+            <div class="form-group">
+                <label for="type">Estate Type:</label>
+                <input type="number" class="form-control" id="type" name="type" required>
+            </div>
+            <div class="form-group">
+                <label for="rooms">Number of Rooms:</label>
+                <input type="number" class="form-control" id="rooms" name="rooms" required>
+            </div>
+            <div class="form-group">
+                <label for="description">Description:</label>
+                <textarea class="form-control" id="description" name="description" required></textarea>
+            </div>
+            <button type="submit" class="btn btn-success">Create Estate</button>
+        </form>
+
+        <form method="POST" action="/create_ad" class="mt-3">
+            <input type="hidden" name="account" value="{{ account }}">
+            <div class="form-group">
+                <label for="id">Estate ID:</label>
+                <input type="number" class="form-control" id="id" name="id" required>
+            </div>
+            <div class="form-group">
+                <label for="price">Price:</label>
+                <input type="number" class="form-control" id="price" name="price" required>
+            </div>
+            <button type="submit" class="btn btn-warning">Create Ad</button>
+        </form>
+
+        <form method="POST" action="/purchase_estate" class="mt-3">
+            <input type="hidden" name="account" value="{{ account }}">
+            <div class="form-group">
+                <label for="id">Ad ID:</label>
+                <input type="number" class="form-control" id="id" name="id" required>
+            </div>
+            <button type="submit" class="btn btn-info">Purchase Estate</button>
+        </form>
+
+        <form method="POST" action="/update_estate" class="mt-3">
+            <input type="hidden" name="account" value="{{ account }}">
+            <div class="form-group">
+                <label for="id">Estate ID:</label>
+                <input type="number" class="form-control" id="id" name="id" required>
+            </div>
+            <div class="form-group">
+                <label for="status">Status (true/false):</label>
+                <input type="text" class="form-control" id="status" name="status" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Update Estate</button>
+        </form>
+
+        <form method="POST" action="/update_ad" class="mt-3">
+            <input type="hidden" name="account" value="{{ account }}">
+            <div class="form-group">
+                <label for="id">Ad ID:</label>
+                <input type="number" class="form-control" id="id" name="id" required>
+            </div>
+            <div class="form-group">
+                <label for="status">Status (0: open, 1: closed):</label>
+                <input type="number" class="form-control" id="status" name="status" required>
+            </div>
+            <button type="submit" class="btn btn-secondary">Update Ad</button>
+        </form>
+
+    </div>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
