@@ -92,13 +92,13 @@ contract EstateAgency {
         emit AdUpdated(msg.sender, advertisements[adID].estateID, adID, block.timestamp, _adStatus);
     }
 
-    function purchaseEstate(uint adID) public payable enough(msg.value, advertisements[adID].price) isClosedAd(adID) {
+    function purchaseEstate(uint adID) public payable isClosedAd(adID) {
         Advertisement memory ad = advertisements[adID];
-        payable(ad.owner).transfer(ad.price);
         balanceSeller[ad.owner] += ad.price;
         ad.buyer = msg.sender;
         ad.adStatus = AdvertisementStatus.Closed;
         advertisements[adID] = ad;
+        estates[adID].owner = msg.sender;
         emit EstatePurchased(ad.owner, msg.sender, adID, ad.estateID, AdvertisementStatus.Closed, block.timestamp, ad.price);
         emit FundsSent(ad.owner, ad.price, block.timestamp);
     }

@@ -9,10 +9,9 @@ web3 = Web3(Web3.HTTPProvider('http://localhost:8545'))
 web3.middleware_onion.inject(geth_poa_middleware, layer=0)
 
 accounts = web3.eth.accounts
-address = '0xac951C9B7501F821D13e4d89f8386F7C1b355aE7'
+address = '0xDFFc380d425424f41A038fF726425F0Cf12E8Cef'
 
-abi = '''
-[
+abi = '''[
 	{
 		"anonymous": false,
 		"inputs": [
@@ -86,57 +85,6 @@ abi = '''
 		],
 		"name": "AdUpdated",
 		"type": "event"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "uint256",
-				"name": "estateID",
-				"type": "uint256"
-			},
-			{
-				"internalType": "uint256",
-				"name": "_price",
-				"type": "uint256"
-			}
-		],
-		"name": "createAd",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "string",
-				"name": "_name",
-				"type": "string"
-			},
-			{
-				"internalType": "string",
-				"name": "_addressOfEstate",
-				"type": "string"
-			},
-			{
-				"internalType": "enum EstateAgency.EstateType",
-				"name": "_estateType",
-				"type": "uint8"
-			},
-			{
-				"internalType": "uint256",
-				"name": "_rooms",
-				"type": "uint256"
-			},
-			{
-				"internalType": "string",
-				"name": "_describe",
-				"type": "string"
-			}
-		],
-		"name": "createEstate",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
 	},
 	{
 		"anonymous": false,
@@ -278,68 +226,6 @@ abi = '''
 		"inputs": [
 			{
 				"internalType": "uint256",
-				"name": "adID",
-				"type": "uint256"
-			}
-		],
-		"name": "purchaseEstate",
-		"outputs": [],
-		"stateMutability": "payable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "uint256",
-				"name": "adID",
-				"type": "uint256"
-			},
-			{
-				"internalType": "enum EstateAgency.AdvertisementStatus",
-				"name": "_adStatus",
-				"type": "uint8"
-			}
-		],
-		"name": "updateAdStatus",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "uint256",
-				"name": "estateID",
-				"type": "uint256"
-			},
-			{
-				"internalType": "bool",
-				"name": "_isActive",
-				"type": "bool"
-			}
-		],
-		"name": "updateEstateStatus",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "uint256",
-				"name": "amount",
-				"type": "uint256"
-			}
-		],
-		"name": "withdraw",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "uint256",
 				"name": "",
 				"type": "uint256"
 			}
@@ -402,6 +288,57 @@ abi = '''
 			}
 		],
 		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "estateID",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "_price",
+				"type": "uint256"
+			}
+		],
+		"name": "createAd",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "string",
+				"name": "_name",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "_addressOfEstate",
+				"type": "string"
+			},
+			{
+				"internalType": "enum EstateAgency.EstateType",
+				"name": "_estateType",
+				"type": "uint8"
+			},
+			{
+				"internalType": "uint256",
+				"name": "_rooms",
+				"type": "uint256"
+			},
+			{
+				"internalType": "string",
+				"name": "_describe",
+				"type": "string"
+			}
+		],
+		"name": "createEstate",
+		"outputs": [],
+		"stateMutability": "nonpayable",
 		"type": "function"
 	},
 	{
@@ -692,9 +629,70 @@ abi = '''
 		],
 		"stateMutability": "view",
 		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "adID",
+				"type": "uint256"
+			}
+		],
+		"name": "purchaseEstate",
+		"outputs": [],
+		"stateMutability": "payable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "adID",
+				"type": "uint256"
+			},
+			{
+				"internalType": "enum EstateAgency.AdvertisementStatus",
+				"name": "_adStatus",
+				"type": "uint8"
+			}
+		],
+		"name": "updateAdStatus",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "estateID",
+				"type": "uint256"
+			},
+			{
+				"internalType": "bool",
+				"name": "_isActive",
+				"type": "bool"
+			}
+		],
+		"name": "updateEstateStatus",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "amount",
+				"type": "uint256"
+			}
+		],
+		"name": "withdraw",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
 	}
 ]'''
-
 contract = web3.eth.contract(address=address, abi=abi)
 
 
