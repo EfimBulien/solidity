@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ads</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <h1 class="mt-5">Все объявления</h1>
+        <ul class="list-group mt-3">
+            {% for ad in ads %}
+                <li class="list-group-item"> Владелец: {{ ad[0] }}, Цена: {{ ad[1] }},
+                    Статус: {{ 'Открыто' if ad[2] else 'Закрыто' }}
+                </li>
+            {% endfor %}
+        </ul>
+        <a href="{{ url_for('home') }}" class="btn btn-primary mt-3">Вернуться на главную страницу</a>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

@@ -3,83 +3,90 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard for {{ account }}</title>
+    <title>Аккаунт {{ account }}</title>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
     <div class="container">
-        <h1 class="mt-5">Dashboard for {{ account }}</h1>
+        <h1 class="mt-5">Управление аккаунтом {{ account }}</h1>
         <h2>&nbsp;</h2>
         <div>
-            <h2>Create Estate</h2>
+            <h2>Баланс</h2>
+            <form action="{{ url_for('balance', account=account) }}" method="get">
+                <button type="submit" class="btn btn-info mt-3">Узнать баланс</button>
+            </form>
+        </div>
+        <h2>&nbsp;</h2>
+        <div>
+            <h2>Создать недвижимость</h2>
             <form action="{{ url_for('create_estate') }}" method="post">
                 <div class="form-group">
                     <input type="hidden" name="account" value="{{ account }}">
-                    <label for="name">Estate Name</label>
+                    <label for="name">Название</label>
                     <input type="text" class="form-control" id="name" name="name" required>
                 </div>
                 <div class="form-group">
-                    <label for="address">Estate Address</label>
+                    <label for="address">Адрес</label>
                     <input type="text" class="form-control" id="address" name="address" required>
                 </div>
                 <div class="form-group">
-                    <label for="type">Estate Type</label>
+                    <label for="type">Тип недвижимости</label>
                     <input type="number" class="form-control" id="type" name="type" required>
                 </div>
                 <div class="form-group">
-                    <label for="rooms">Number of Rooms</label>
+                    <label for="rooms">Количество комнат</label>
                     <input type="number" class="form-control" id="rooms" name="rooms" required>
                 </div>
                 <div class="form-group">
-                    <label for="description">Description</label>
+                    <label for="description">Описание</label>
                     <textarea class="form-control" id="description" name="description" required></textarea>
                 </div>
-                <button type="submit" class="btn btn-primary mt-3">Create Estate</button>
+                <button type="submit" class="btn btn-primary mt-3">Создать</button>
             </form>
         </div>
         <h2>&nbsp;</h2>
         <div>
-            <h2>Create Advertisement</h2>
+            <h2>Создать объявление</h2>
             <form action="{{ url_for('create_ad') }}" method="post">
                 <div class="form-group">
                     <input type="hidden" name="account" value="{{ account }}">
-                    <label for="id">Estate ID</label>
+                    <label for="id">ID недвижимости</label>
                     <input type="number" class="form-control" id="id" name="id" required>
                 </div>
                 <div class="form-group">
-                    <label for="price">Price</label>
+                    <label for="price">Цена, wei</label>
                     <input type="number" class="form-control" id="price" name="price" required>
                 </div>
-                <button type="submit" class="btn btn-primary mt-3">Create Ad</button>
+                <button type="submit" class="btn btn-primary mt-3">Создать</button>
             </form>
         </div>
         <h2>&nbsp;</h2>
         <div>
-            <h2>Purchase Estate</h2>
+            <h2>Купить недвижимость</h2>
             <form action="{{ url_for('purchase_estate') }}" method="post">
                 <div class="form-group">
                     <input type="hidden" name="account" value="{{ account }}">
-                    <label for="id">Estate ID</label>
+                    <label for="id">ID недвижимости</label>
                     <input type="number" class="form-control" id="id" name="id" required>
                 </div>
-                <button type="submit" class="btn btn-primary mt-3">Purchase Estate</button>
+                <button type="submit" class="btn btn-primary mt-3">Купить</button>
             </form>
         </div>
         <h2>&nbsp;</h2>
         <div>
-            <h2>Withdraw</h2>
+            <h2>Списание средств</h2>
             <form action="{{ url_for('withdraw') }}" method="post">
                 <div class="form-group">
                     <input type="hidden" name="account" value="{{ account }}">
-                    <label for="amount">Amount to Withdraw</label>
+                    <label for="amount">Сумма списания</label>
                     <input type="number" class="form-control" id="amount" name="amount" required>
                 </div>
-                <button type="submit" class="btn btn-warning mt-3">Withdraw</button>
+                <button type="submit" class="btn btn-warning mt-3">Списать средства</button>
             </form>
         </div>
         <h2>&nbsp;</h2>
         <div>
-            <h2>Update Estates</h2>
+            <h2>Обновить статус недвижимость</h2>
             <form action="{{ url_for('update_estate') }}" method="post">
                 <div class="form-group">
                     <input type="hidden" name="account" value="{{ account }}">
@@ -87,69 +94,62 @@
                     <input type="number" class="form-control" id="id" name="id" required>
                 </div>
                 <div class="form-group">
-                    <label for="status">Estate Status (true/false)</label>
+                    <label for="status">Статус недвижимости (true/false)</label>
                     <input type="text" class="form-control" id="status" name="status" required>
                 </div>
-                <button type="submit" class="btn btn-primary mt-3">Update Estate</button>
+                <button type="submit" class="btn btn-primary mt-3">Обновить статус</button>
             </form>
         </div>
         <h2>&nbsp;</h2>
         <div>
-            <h2>Update Advertisement</h2>
+            <h2>Обновить статус объявления</h2>
             <form action="{{ url_for('update_ad') }}" method="post">
                 <div class="form-group">
                     <input type="hidden" name="account" value="{{ account }}">
-                    <label for="id">Ad ID</label>
+                    <label for="id">ID объявления</label>
                     <input type="number" class="form-control" id="id" name="id" required>
                 </div>
                 <div class="form-group">
-                    <label for="status">Ad Status (0/1)</label>
+                    <label for="status">Статус объявления (0/1)</label>
                     <input type="number" class="form-control" id="status" name="status" required>
                 </div>
-                <button type="submit" class="btn btn-primary mt-3">Update Ad</button>
+                <button type="submit" class="btn btn-primary mt-3">Обновить статус</button>
             </form>
         </div>
         <h2>&nbsp;</h2>
         <div>
-            <h2>Get Balance</h2>
-            <form action="{{ url_for('balance', account=account) }}" method="get">
-                <button type="submit" class="btn btn-info mt-3">Get Balance</button>
-            </form>
-        </div>
-        <h2>&nbsp;</h2>
-        <div>
-            <h2>Get all Advertisements</h2>
+            <h2>Список всех объявлений</h2>
             <form action="{{ url_for('get_all_ads', account=account) }}" method="get">
-                <button type="submit" class="btn btn-secondary mt-3">Get All Ads</button>
+                <button type="submit" class="btn btn-secondary mt-3">Показать</button>
             </form>
         </div>
         <h2>&nbsp;</h2>
         <div>
-            <h2>Get all Estates</h2>
-            <form action="{{ url_for('get_all_estates', account=account) }}" method="get">
-                <button type="submit" class="btn btn-secondary mt-3">Get All Estates</button>
-            </form>
-        </div>
-        <h2>&nbsp;</h2>
-        <div>
-            <h2>Get Advertisement by ID</h2>
+            <h2>Найти объявление по ID</h2>
             <form action="{{ url_for('get_ad', account=account, ad_id=0) }}" method="get">
                 <div class="form-group">
-                    <label for="ad_id">Ad ID</label>
+                    <label for="ad_id">ID объявления</label>
                     <input type="number" class="form-control" id="ad_id" name="ad_id" required>
                 </div>
-                <button type="submit" class="btn btn-secondary mt-3">Get Ad</button>
+                <button type="submit" class="btn btn-secondary mt-3">Найти</button>
             </form>
         </div>
         <h2>&nbsp;</h2>
         <div>
-            <h2>Get Estate by ID</h2>
+            <h2>Список всей недвижимости</h2>
+            <form action="{{ url_for('get_all_estates', account=account) }}" method="get">
+                <button type="submit" class="btn btn-secondary mt-3">Показать</button>
+            </form>
+        </div>
+        <h2>&nbsp;</h2>
+        <div>
+            <h2>Найти недвижимость по ID</h2>
             <form action="{{ url_for('get_estate', account=account, estate_id=0) }}" method="get">
                 <div class="form-group">
-                    <label for="estate_id">Estate ID</label>
+                    <label for="estate_id">ID недвижимости</label>
                     <input type="number" class="form-control" id="estate_id" name="estate_id" required>
                 </div>
-                <button type="submit" class="btn btn-secondary mt-3">Get Estate</button>
+                <button type="submit" class="btn btn-secondary mt-3">Найти</button>
             </form>
         </div>
         <div class="mt-3">
@@ -163,6 +163,7 @@
                 {% endif %}
             {% endwith %}
         </div>
+        <a href="{{ url_for('home') }}" class="btn btn-primary mt-3">Вернуться на главную страницу</a>
     </div>
 </body>
 </html>

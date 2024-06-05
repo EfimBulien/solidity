@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Объявление</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <h1 class="mt-5">Объявление {{ estate[1] }}</h1>
+        <div class="card mt-3">
+            <div class="card-body">
+                <h5 class="card-title">ID: {{ estate[0] }}</h5>
+                <p class="card-text">Название: {{ estate[1] }}</p>
+                <p class="card-text">Адрес: {{ estate[2] }}</p>
+                <p class="card-text">Тип: {{ estate[3] }}</p>
+                <p class="card-text">Количество комнат: {{ estate[4] }}</p>
+                <p class="card-text">Описание: {{ estate[5] }}</p>
+                <p class="card-text">Статус: {{ 'Открыто' if estate[6] else 'Закрыто' }}</p>
+            </div>
+        </div>
+        <a href="{{ url_for('home') }}" class="btn btn-primary mt-3">Вернуться на главную страницу</a>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
