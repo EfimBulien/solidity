@@ -1,9 +1,18 @@
 from flask import Flask, request, render_template, redirect, url_for
+from flask_caching import Cache
 from web3.middleware import geth_poa_middleware
 from web3 import Web3
 import string
 
+config = {
+    "DEBUG": True,
+    "CACHE_TYPE": "SimpleCache",
+    "CACHE_DEFAULT_TIMEOUT": 300
+}
+
 app = Flask(__name__)
+app.config.from_mapping(config)
+cache = Cache(app)
 
 web3 = Web3(Web3.HTTPProvider('http://localhost:8545'))
 web3.middleware_onion.inject(geth_poa_middleware, layer=0)
@@ -707,11 +716,13 @@ def check(password):
 @app.route('/')
 @app.route('/home')
 @app.route('/index')
+@cache.cached(timeout=60)
 def home():
     return render_template('index.html')
 
 
 @app.route('/register', methods=['GET', 'POST'])
+@cache.cached(timeout=60)
 def register():
     if request.method == 'POST':
         password = request.form['password']
@@ -724,6 +735,7 @@ def register():
 
 
 @app.route('/login', methods=['GET', 'POST'])
+@cache.cached(timeout=60)
 def login():
     if request.method == 'POST':
         try:
@@ -737,11 +749,13 @@ def login():
 
 
 @app.route('/dashboard/<account>')
+@cache.cached(timeout=60)
 def dashboard(account):
     return render_template('dashboard.html', account=account)
 
 
 @app.route('/balance/<account>')
+@cache.cached(timeout=60)
 def balance(account):
     try:
         account_balance = contract.functions.getBalance().call({'from': account})
@@ -751,6 +765,7 @@ def balance(account):
 
 
 @app.route('/withdraw', methods=['POST'])
+@cache.cached(timeout=60)
 def withdraw():
     try:
         account = web3.to_checksum_address(request.form['account'])
@@ -765,6 +780,7 @@ def withdraw():
 
 
 @app.route('/create_estate', methods=['POST'])
+@cache.cached(timeout=60)
 def create_estate():
     try:
         account = web3.to_checksum_address(request.form['account'])
@@ -782,6 +798,7 @@ def create_estate():
 
 
 @app.route('/create_ad', methods=['POST'])
+@cache.cached(timeout=60)
 def create_ad():
     try:
         account = web3.to_checksum_address(request.form['account'])
@@ -797,6 +814,7 @@ def create_ad():
 
 
 @app.route('/purchase_estate', methods=['POST'])
+@cache.cached(timeout=60)
 def purchase_estate():
     try:
         account = web3.to_checksum_address(request.form['account'])
@@ -809,6 +827,7 @@ def purchase_estate():
 
 
 @app.route('/update_estate', methods=['POST'])
+@cache.cached(timeout=60)
 def update_estate():
     try:
         account = web3.to_checksum_address(request.form['account'])
@@ -822,6 +841,7 @@ def update_estate():
 
 
 @app.route('/update_ad', methods=['POST'])
+@cache.cached(timeout=60)
 def update_ad():
     try:
         account = web3.to_checksum_address(request.form['account'])
@@ -835,6 +855,7 @@ def update_ad():
 
 
 @app.route('/get_all_ads', methods=['GET'])
+@cache.cached(timeout=60)
 def get_all_ads():
     try:
         ads = contract.functions.getAllAds().call()
@@ -844,6 +865,7 @@ def get_all_ads():
 
 
 @app.route('/get_ad', methods=['GET'])
+@cache.cached(timeout=60)
 def get_ad():
     try:
         ad_id = request.args.get('ad_id', default=0, type=int)
@@ -854,6 +876,7 @@ def get_ad():
 
 
 @app.route('/get_all_estates', methods=['GET'])
+@cache.cached(timeout=60)
 def get_all_estates():
     try:
         estates = contract.functions.getAllEstates().call()
@@ -863,6 +886,7 @@ def get_all_estates():
 
 
 @app.route('/get_estate', methods=['GET'])
+@cache.cached(timeout=60)
 def get_estate():
     try:
         estate_id = request.args.get('estate_id', default=0, type=int)
