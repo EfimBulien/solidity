@@ -16,14 +16,14 @@ contract EstateAgency {
     }
 
     struct Estate {
-        string name; //0
-        string addressOfEstate; //1
-        uint estateID; //2
-        EstateType estateType; //3
-        uint rooms; //4
-        string describe; //5
-        address owner; //6
-        bool isActive; //7
+        string name;
+        string addressOfEstate;
+        uint estateID;
+        EstateType estateType;
+        uint rooms;
+        string describe;
+        address owner;
+        bool isActive;
     }
 
     struct Advertisement {
