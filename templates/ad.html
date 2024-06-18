@@ -3,17 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ad Details</title>
+    <title>Объявление</title>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
     <div class="container">
-        <h1 class="mt-5">Ad Details</h1>
+        <h1 class="mt-5">Объявление о продаже</h1>
         <div class="card mt-3">
             <div class="card-body">
-                <h5 class="card-title">Ad ID: {{ ad[0] }}</h5>
-                <p class="card-text">Price: {{ ad[1] }}</p>
-                <p class="card-text">Status: {{ 'Open' if ad[2] else 'Closed' }}</p>
+                <h5 class="card-title">ID владельца: {{ ad[0] }}</h5>
+                <p class="card-text">Цена, wei: {{ ad[2] }}</p>
+                <p class="card-text">Статус: {{ 'Открыто' if ad[3] else 'Закрыто' }}</p>
             </div>
         </div>
         <a href="{{ url_for('home') }}" class="btn btn-primary mt-3">Вернуться на главную страницу</a>

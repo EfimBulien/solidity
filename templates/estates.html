@@ -11,9 +11,15 @@
         <h1 class="mt-5">Недвижимость</h1>
         <ul class="list-group mt-3">
             {% for estate in estates %}
-                <li class="list-group-item">ID: {{ estate[0] }}, Название: {{ estate[1] }}, Адрес: {{ estate[2] }},
-                    Тип недвижимости: {{ estate[3] }}, Количество комнат: {{ estate[4] }}, Описание: {{ estate[5] }},
-                    Статус: {{ 'Открыто' if estate[6] else 'Закрыто' }}
+                <li class="list-group-item">
+                    ID: {{ estate[2] }},
+                    Название: {{ estate[0] }},
+                    Адрес: {{ estate[1] }},
+                    Тип недвижимости: {{ estate[3] }},
+                    Количество комнат: {{ estate[4] }},
+                    Описание: {{ estate[5] }},
+                    Статус: {{ 'Открыто' if estate[7] else 'Закрыто' }},
+                    Владелец: {{ estate[6] }}
                 </li>
             {% endfor %}
         </ul>

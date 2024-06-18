@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify, render_template, redirect, url_for
+from flask import Flask, request, render_template, redirect, url_for
 from web3.middleware import geth_poa_middleware
 from web3 import Web3
 import string
@@ -717,18 +717,18 @@ def register():
         password = request.form['password']
         if check(password):
             new_account = web3.geth.personal.new_account(password)
-            return render_template('success.html', message=f'New account created: {new_account}')
+            return render_template('success.html', message=f'Новый аккаунт создан: {new_account}')
         else:
-            return render_template('error.html', message='Weak password')
+            return render_template('error.html', message='Пароль не соответсвует требованиям.')
     return render_template('register.html')
 
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
-        public_key = request.form['key']
-        password = request.form['password']
         try:
+            public_key = request.form['key']
+            password = request.form['password']
             web3.geth.personal.unlock_account(public_key, password)
             return redirect(url_for('dashboard', account=public_key))
         except Exception as e:
@@ -752,88 +752,84 @@ def balance(account):
 
 @app.route('/withdraw', methods=['POST'])
 def withdraw():
-    account = request.form['account']
-    amount = request.form['amount']
     try:
-        amount = int(amount)
+        account = web3.to_checksum_address(request.form['account'])
+        amount = int(request.form['amount'])
         if amount <= 0:
-            return render_template('error.html', message='Amount must be greater than zero')
+            return render_template('error.html', message='Сумма должна быть больше 0.')
         _hash = contract.functions.withdraw(amount).transact({'from': account})
-        return render_template('success.html', message=f'Transaction sent. Tx hash: {_hash.hex()}')
+        return render_template('success.html', message=f'Успешное списание средств. '
+                                                       f'Хэш транзакции: {_hash.hex()}')
     except Exception as e:
         return render_template('error.html', message=str(e))
 
 
 @app.route('/create_estate', methods=['POST'])
 def create_estate():
-    account = request.form['account']
-    estate_name = request.form['name']
-    estate_address = request.form['address']
-    estate_type = request.form['type']
-    rooms = request.form['rooms']
-    description = request.form['description']
     try:
-        estate_type = int(estate_type)
-        rooms = int(rooms)
+        account = web3.to_checksum_address(request.form['account'])
+        estate_name = request.form['name']
+        estate_address = request.form['address']
+        estate_type = int(request.form['type'])
+        rooms = int(request.form['rooms'])
+        description = request.form['description']
         _hash = contract.functions.createEstate(estate_name, estate_address, estate_type, rooms, description).transact(
             {'from': account})
-        return render_template('success.html', message=f'Estate created. Tx hash: {_hash.hex()}')
+        return render_template('success.html', message=f'Недвижимость успешно создана. '
+                                                       f'Хэш транзакции: {_hash.hex()}')
     except Exception as e:
         return render_template('error.html', message=str(e))
 
 
 @app.route('/create_ad', methods=['POST'])
 def create_ad():
-    account = request.form['account']
-    ad_id = request.form['id']
-    price = request.form['price']
     try:
-        ad_id = int(ad_id)
-        price = int(price)
+        account = web3.to_checksum_address(request.form['account'])
+        ad_id = int(request.form['id'])
+        price = int(request.form['price'])
         if price <= 0:
-            return render_template('error.html', message='Price must be greater than zero')
+            return render_template('error.html', message='Цена должна быть больше 0.')
         _hash = contract.functions.createAd(ad_id, price).transact({'from': account})
-        return render_template('success.html', message=f'Ad created. Tx hash: {_hash.hex()}')
+        return render_template('success.html', message=f'Объявление создано. '
+                                                       f'Хэш транзакции: {_hash.hex()}')
     except Exception as e:
         return render_template('error.html', message=str(e))
 
 
 @app.route('/purchase_estate', methods=['POST'])
 def purchase_estate():
-    account = request.form['account']
-    estate_id = request.form['id']
     try:
-        estate_id = int(estate_id)
+        account = web3.to_checksum_address(request.form['account'])
+        estate_id = int(request.form['id'])
         _hash = contract.functions.purchaseEstate(estate_id).transact({'from': account})
-        return render_template('success.html', message=f'Estate purchased. Tx hash: {_hash.hex()}')
+        return render_template('success.html', message=f'Недвижимость успешно приобретена. '
+                                                       f'Хэш транзакции: {_hash.hex()}')
     except Exception as e:
         return render_template('error.html', message=str(e))
 
 
 @app.route('/update_estate', methods=['POST'])
 def update_estate():
-    account = request.form['account']
-    estate_id = request.form['id']
-    estate_status = request.form['status']
     try:
-        estate_id = int(estate_id)
-        estate_status = bool(estate_status)
+        account = web3.to_checksum_address(request.form['account'])
+        estate_id = int(request.form['id'])
+        estate_status = bool(request.form['status'])
         _hash = contract.functions.updateEstateStatus(estate_id, estate_status).transact({'from': account})
-        return render_template('success.html', message=f'Estate status updated. Tx hash: {_hash.hex()}')
+        return render_template('success.html', message=f'Статус недвижимости обновлен. '
+                                                       f'Хэш транзакции: {_hash.hex()}')
     except Exception as e:
         return render_template('error.html', message=str(e))
 
 
 @app.route('/update_ad', methods=['POST'])
 def update_ad():
-    account = request.form['account']
-    ad_id = request.form['id']
-    ad_status = request.form['status']
     try:
-        ad_id = int(ad_id)
-        ad_status = int(ad_status)
+        account = web3.to_checksum_address(request.form['account'])
+        ad_id = int(request.form['id'])
+        ad_status = int(request.form['status'])
         _hash = contract.functions.updateAdStatus(ad_id, ad_status).transact({'from': account})
-        return render_template('success.html', message=f'Ad status updated. Tx hash: {_hash.hex()}')
+        return render_template('success.html', message=f'Статус объявления обновлен. '
+                                                       f'Хэш транзакции: {_hash.hex()}')
     except Exception as e:
         return render_template('error.html', message=str(e))
 
@@ -847,9 +843,10 @@ def get_all_ads():
         return render_template('error.html', message=str(e))
 
 
-@app.route('/get_ad/<int:ad_id>', methods=['GET'])
-def get_ad(ad_id):
+@app.route('/get_ad', methods=['GET'])
+def get_ad():
     try:
+        ad_id = request.args.get('ad_id', default=0, type=int)
         ad = contract.functions.getAd(ad_id).call()
         return render_template('ad.html', ad=ad)
     except Exception as e:
@@ -865,9 +862,10 @@ def get_all_estates():
         return render_template('error.html', message=str(e))
 
 
-@app.route('/get_estate/<int:estate_id>', methods=['GET'])
-def get_estate(estate_id):
+@app.route('/get_estate', methods=['GET'])
+def get_estate():
     try:
+        estate_id = request.args.get('estate_id', default=0, type=int)
         estate = contract.functions.getEstate(estate_id).call()
         return render_template('estate.html', estate=estate)
     except Exception as e:

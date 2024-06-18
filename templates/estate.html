@@ -3,21 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Объявление</title>
+    <title>Недвижимость</title>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
     <div class="container">
-        <h1 class="mt-5">Объявление {{ estate[1] }}</h1>
+        <h1 class="mt-5">Недвижимость {{ estate[0] }}</h1>
         <div class="card mt-3">
             <div class="card-body">
-                <h5 class="card-title">ID: {{ estate[0] }}</h5>
-                <p class="card-text">Название: {{ estate[1] }}</p>
-                <p class="card-text">Адрес: {{ estate[2] }}</p>
+                <h5 class="card-title">ID: {{ estate[2] }}</h5>
+                <p class="card-text">Название: {{ estate[0] }}</p>
+                <p class="card-text">Адрес: {{ estate[1] }}</p>
                 <p class="card-text">Тип: {{ estate[3] }}</p>
                 <p class="card-text">Количество комнат: {{ estate[4] }}</p>
                 <p class="card-text">Описание: {{ estate[5] }}</p>
-                <p class="card-text">Статус: {{ 'Открыто' if estate[6] else 'Закрыто' }}</p>
+                <p class="card-text">Владелец: {{ estate[6] }}</p>
+                <p class="card-text">Статус: {{ 'Открыто' if estate[7] else 'Закрыто' }}</p>
             </div>
         </div>
         <a href="{{ url_for('home') }}" class="btn btn-primary mt-3">Вернуться на главную страницу</a>

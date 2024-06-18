@@ -126,7 +126,7 @@
         <h2>&nbsp;</h2>
         <div>
             <h2>Найти объявление по ID</h2>
-            <form action="{{ url_for('get_ad', account=account, ad_id=0) }}" method="get">
+            <form action="{{ url_for('get_ad') }}" method="get">
                 <div class="form-group">
                     <label for="ad_id">ID объявления</label>
                     <input type="number" class="form-control" id="ad_id" name="ad_id" required>
@@ -144,7 +144,7 @@
         <h2>&nbsp;</h2>
         <div>
             <h2>Найти недвижимость по ID</h2>
-            <form action="{{ url_for('get_estate', account=account, estate_id=0) }}" method="get">
+            <form action="{{ url_for('get_estate') }}" method="get">
                 <div class="form-group">
                     <label for="estate_id">ID недвижимости</label>
                     <input type="number" class="form-control" id="estate_id" name="estate_id" required>

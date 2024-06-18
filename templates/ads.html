@@ -11,8 +11,8 @@
         <h1 class="mt-5">Все объявления</h1>
         <ul class="list-group mt-3">
             {% for ad in ads %}
-                <li class="list-group-item"> Владелец: {{ ad[0] }}, Цена: {{ ad[1] }},
-                    Статус: {{ 'Открыто' if ad[2] else 'Закрыто' }}
+                <li class="list-group-item"> Владелец: {{ ad[0] }}, Цена: {{ ad[2] }} WEI,
+                    Статус: {{ 'Открыто' if ad[3] else 'Закрыто' }}
                 </li>
             {% endfor %}
         </ul>
