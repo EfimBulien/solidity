@@ -1,4 +1,5 @@
 import datetime
+import logging
 
 from flask import Flask, request, render_template, redirect, url_for
 from flask_caching import Cache
@@ -20,11 +21,15 @@ accounts = web3.eth.accounts
 address = web3.to_checksum_address(address)
 contract = web3.eth.contract(address=address, abi=abi)
 
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
 
 @app.route('/')
 @app.route('/home')
 @app.route('/index')
 def home():
+    logger.info('Rendering home page.')
     return render_template('index.html')
 
 
@@ -34,12 +39,12 @@ def register():
         password = request.form['password']
         if check(password):
             new_account = web3.geth.personal.new_account(password)
-            print(datetime.datetime.now(), new_account, password)
-            app.logger.info(f'{datetime.datetime.now()} - Account created!')
+            logger.info(f'{datetime.datetime.now()} - Account created: {new_account}')
             return render_template('success.html', message=f'Новый аккаунт создан: {new_account}')
         else:
-            app.logger.info(f'{datetime.datetime.now()} - Incorrect password!')
+            logger.warning(f'{datetime.datetime.now()} - Incorrect password attempt.')
             return render_template('error.html', message='Пароль не соответсвует требованиям.')
+    logger.info('Rendering registration page.')
     return render_template('register.html')
 
 
@@ -50,18 +55,19 @@ def login():
             public_key = request.form['key']
             password = request.form['password']
             web3.geth.personal.unlock_account(public_key, password)
-            print(datetime.datetime.now(), public_key, password)
+            logger.info(f'{datetime.datetime.now()} - Account unlocked: {public_key}')
             return redirect(url_for('dashboard', account=public_key))
         except Exception as e:
-            print(datetime.datetime.now(), e)
+            logger.error(f'{datetime.datetime.now()} - Error during login: {e}')
             return render_template('error.html', message=str(e))
+    logger.info('Rendering login page.')
     return render_template('login.html')
 
 
 @app.route('/dashboard/<account>')
 @cache.cached(timeout=60)
 def dashboard(account):
-    print(datetime.datetime.now(), account)
+    logger.info(f'{datetime.datetime.now()} - Accessing dashboard for account: {account}')
     return render_template('dashboard.html', account=account)
 
 
@@ -70,10 +76,10 @@ def dashboard(account):
 def balance(account):
     try:
         account_balance = contract.functions.getBalance().call({'from': account})
-        print(datetime.datetime.now(), account, account_balance)
+        logger.info(f'{datetime.datetime.now()} - Retrieved balance for account {account}: {account_balance}')
         return render_template('balance.html', balance=account_balance)
     except Exception as e:
-        print(datetime.datetime.now(), e)
+        logger.error(f'{datetime.datetime.now()} - Error retrieving balance for account {account}: {e}')
         return render_template('error.html', message=str(e))
 
 
@@ -84,14 +90,14 @@ def withdraw():
         account = web3.to_checksum_address(request.form['account'])
         amount = int(request.form['amount'])
         if amount <= 0:
-            print(datetime.datetime.now(), amount)
+            logger.warning(f'{datetime.datetime.now()} - Invalid withdrawal amount: {amount}')
             return render_template('error.html', message='Сумма должна быть больше 0.')
         _hash = contract.functions.withdraw(amount).transact({'from': account})
-        print(datetime.datetime.now(), account, amount, _hash)
-        return render_template('success.html', message=f'Успешное списание средств. '
-                                                       f'Хэш транзакции: {_hash.hex()}')
+        logger.info(
+            f'{datetime.datetime.now()} - Withdrawal successful for account {account}: {amount}, transaction hash: {_hash.hex()}')
+        return render_template('success.html', message=f'Успешное списание средств. Хэш транзакции: {_hash.hex()}')
     except Exception as e:
-        print(datetime.datetime.now(), e)
+        logger.error(f'{datetime.datetime.now()} - Error during withdrawal for account {account}: {e}')
         return render_template('error.html', message=str(e))
 
 
@@ -107,11 +113,11 @@ def create_estate():
         description = request.form['description']
         _hash = contract.functions.createEstate(estate_name, estate_address, estate_type, rooms, description).transact(
             {'from': account})
-        print(datetime.datetime.now(), account, estate_name, estate_address, estate_type, rooms, description, _hash)
-        return render_template('success.html', message=f'Недвижимость успешно создана. '
-                                                       f'Хэш транзакции: {_hash.hex()}')
+        logger.info(
+            f'{datetime.datetime.now()} - Estate created by account {account}: {estate_name}, {estate_address}, type: {estate_type}, rooms: {rooms}, description: {description}, transaction hash: {_hash.hex()}')
+        return render_template('success.html', message=f'Недвижимость успешно создана. Хэш транзакции: {_hash.hex()}')
     except Exception as e:
-        print(datetime.datetime.now(), e)
+        logger.error(f'{datetime.datetime.now()} - Error creating estate for account {account}: {e}')
         return render_template('error.html', message=str(e))
 
 
@@ -123,13 +129,14 @@ def create_ad():
         ad_id = int(request.form['id'])
         price = int(request.form['price'])
         if price <= 0:
+            logger.warning(f'{datetime.datetime.now()} - Invalid ad price: {price}')
             return render_template('error.html', message='Цена должна быть больше 0.')
         _hash = contract.functions.createAd(ad_id, price).transact({'from': account})
-        print(datetime.datetime.now(), account, ad_id, price, _hash)
-        return render_template('success.html', message=f'Объявление создано. '
-                                                       f'Хэш транзакции: {_hash.hex()}')
+        logger.info(
+            f'{datetime.datetime.now()} - Ad created by account {account}: ad_id: {ad_id}, price: {price}, transaction hash: {_hash.hex()}')
+        return render_template('success.html', message=f'Объявление создано. Хэш транзакции: {_hash.hex()}')
     except Exception as e:
-        print(datetime.datetime.now(), e)
+        logger.error(f'{datetime.datetime.now()} - Error creating ad for account {account}: {e}')
         return render_template('error.html', message=str(e))
 
 
@@ -139,11 +146,12 @@ def purchase_estate():
         account = web3.to_checksum_address(request.form['account'])
         estate_id = int(request.form['id'])
         _hash = contract.functions.purchaseEstate(estate_id).transact({'from': account})
-        print(datetime.datetime.now(), account, estate_id, _hash)
-        return render_template('success.html', message=f'Недвижимость успешно приобретена. '
-                                                       f'Хэш транзакции: {_hash.hex()}')
+        logger.info(
+            f'{datetime.datetime.now()} - Estate purchased by account {account}: estate_id: {estate_id}, transaction hash: {_hash.hex()}')
+        return render_template('success.html',
+                               message=f'Недвижимость успешно приобретена. Хэш транзакции: {_hash.hex()}')
     except Exception as e:
-        print(datetime.datetime.now(), e)
+        logger.error(f'{datetime.datetime.now()} - Error purchasing estate for account {account}: {e}')
         return render_template('error.html', message=str(e))
 
 
@@ -155,11 +163,11 @@ def update_estate():
         estate_id = int(request.form['id'])
         estate_status = bool(request.form['status'])
         _hash = contract.functions.updateEstateStatus(estate_id, estate_status).transact({'from': account})
-        print(datetime.datetime.now(), account, estate_id, estate_status,_hash)
-        return render_template('success.html', message=f'Статус недвижимости обновлен. '
-                                                       f'Хэш транзакции: {_hash.hex()}')
+        logger.info(
+            f'{datetime.datetime.now()} - Estate status updated by account {account}: estate_id: {estate_id}, status: {estate_status}, transaction hash: {_hash.hex()}')
+        return render_template('success.html', message=f'Статус недвижимости обновлен. Хэш транзакции: {_hash.hex()}')
     except Exception as e:
-        print(datetime.datetime.now(), e)
+        logger.error(f'{datetime.datetime.now()} - Error updating estate status for account {account}: {e}')
         return render_template('error.html', message=str(e))
 
 
@@ -171,11 +179,11 @@ def update_ad():
         ad_id = int(request.form['id'])
         ad_status = int(request.form['status'])
         _hash = contract.functions.updateAdStatus(ad_id, ad_status).transact({'from': account})
-        print(datetime.datetime.now(), account, ad_id, ad_status,_hash)
-        return render_template('success.html', message=f'Статус объявления обновлен. '
-                                                       f'Хэш транзакции: {_hash.hex()}')
+        logger.info(
+            f'{datetime.datetime.now()} - Ad status updated by account {account}: ad_id: {ad_id}, status: {ad_status}, transaction hash: {_hash.hex()}')
+        return render_template('success.html', message=f'Статус объявления обновлен. Хэш транзакции: {_hash.hex()}')
     except Exception as e:
-        print(datetime.datetime.now(), e)
+        logger.error(f'{datetime.datetime.now()} - Error updating ad status for account {account}: {e}')
         return render_template('error.html', message=str(e))
 
 
@@ -184,10 +192,10 @@ def update_ad():
 def get_all_ads():
     try:
         ads = contract.functions.getAllAds().call()
-        print(datetime.datetime.now(), ads)
+        logger.info(f'{datetime.datetime.now()} - Retrieved all ads: {ads}')
         return render_template('ads.html', ads=ads)
     except Exception as e:
-        print(datetime.datetime.now(), e)
+        logger.error(f'{datetime.datetime.now()} - Error retrieving all ads: {e}')
         return render_template('error.html', message=str(e))
 
 
@@ -197,10 +205,10 @@ def get_ad():
     try:
         ad_id = request.args.get('ad_id', default=0, type=int)
         ad = contract.functions.getAd(ad_id).call()
-        print(datetime.datetime.now(), ad_id, ad)
+        logger.info(f'{datetime.datetime.now()} - Retrieved ad {ad_id}: {ad}')
         return render_template('ad.html', ad=ad)
     except Exception as e:
-        print(datetime.datetime.now(), e)
+        logger.error(f'{datetime.datetime.now()} - Error retrieving ad {ad_id}: {e}')
         return render_template('error.html', message=str(e))
 
 
@@ -209,10 +217,10 @@ def get_ad():
 def get_all_estates():
     try:
         estates = contract.functions.getAllEstates().call()
-        print(datetime.datetime.now(), estates)
+        logger.info(f'{datetime.datetime.now()} - Retrieved all estates: {estates}')
         return render_template('estates.html', estates=estates)
     except Exception as e:
-        print(datetime.datetime.now(), e)
+        logger.error(f'{datetime.datetime.now()} - Error retrieving all estates: {e}')
         return render_template('error.html', message=str(e))
 
 
@@ -222,10 +230,10 @@ def get_estate():
     try:
         estate_id = request.args.get('estate_id', default=0, type=int)
         estate = contract.functions.getEstate(estate_id).call()
-        print(datetime.datetime.now(), estate_id, estate)
+        logger.info(f'{datetime.datetime.now()} - Retrieved estate {estate_id}: {estate}')
         return render_template('estate.html', estate=estate)
     except Exception as e:
-        print(datetime.datetime.now(), e)
+        logger.error(f'{datetime.datetime.now()} - Error retrieving estate {estate_id}: {e}')
         return render_template('error.html', message=str(e))
 
 
